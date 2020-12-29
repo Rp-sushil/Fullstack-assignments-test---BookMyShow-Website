@@ -46,5 +46,6 @@
     "xml-js": "^1.6.11",
     "cypress": "6.0.0",
     "mochawesome": "^6.2.1"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

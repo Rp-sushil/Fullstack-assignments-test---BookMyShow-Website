@@ -1,0 +1,17 @@
+GET http://localhost:8080/api/booking
+###
+POST http://localhost:8080/api/booking
+content-type: application/json
+
+{   
+    "movie":"Tenet",
+    "seats": {
+                "A1":4,
+                "A2":1,
+                "A3":0,
+                "A4":1,
+                "D1":0,
+                "D2":0
+            },
+    "slot": "1:00 AM"
+}
