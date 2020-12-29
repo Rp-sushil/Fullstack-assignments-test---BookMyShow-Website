@@ -11,12 +11,14 @@ export default function Seats({
     seat === selectedSeat ? "seat-column seat-column-selected" : "seat-column";
   return (
     <div className="seat-row">
+      {console.log("rendered")}
       {seats.map((seat, i) => {
         return (
           <div key={"seat-" + seat} className={getClass(seat)}>
             <h5>Type-{seat}</h5>
             <input
               type="number"
+              value={seatsValues[seat]}
               min="0"
               max="100"
               id={"seat-" + seat}

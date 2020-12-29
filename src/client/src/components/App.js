@@ -14,12 +14,21 @@ const App = () => {
   const [selectedMovie, setSelectedMovie] = useState(
     localStorage.getItem("movie")
   );
-  const [seletedslot, setSelectedslot] = useState(
-    localStorage.getItem("slots")
-  );
-  const [seatsValues, setSeatsValues] = useState(new Map());
-  const [selectedSeat, setSelectedSeat] = useState(
+  const [seletedslot, setSelectedslot] = useState(localStorage.getItem("slot"));
+  const [seatsValues, setSeatsValues] = useState(
     localStorage.getItem("seats")
+      ? JSON.parse(localStorage.getItem("seats"))
+      : {
+          A1: 0,
+          A2: 0,
+          A3: 0,
+          A4: 0,
+          D1: 0,
+          D2: 0,
+        }
+  );
+  const [selectedSeat, setSelectedSeat] = useState(
+    localStorage.getItem("selectedSeat")
   );
   const [lastOrder, setlastOrder] = useState({});
 
@@ -67,37 +76,44 @@ const App = () => {
 
   useEffect(() => {
     fetchLastOrder();
-    if (!localStorage.getItem("seats")) {
-      const temp = seatsValues;
-      temp["A1"] = 0;
-      temp["A2"] = 0;
-      temp["A3"] = 0;
-      temp["A4"] = 0;
-      temp["D1"] = 0;
-      temp["D2"] = 0;
-      setSeatsValues(temp);
-    } else {
-      setSeatsValues(localStorage.getItem("seats"));
-    }
   }, []);
 
   const clearRequest = () => {
     setSelectedSeat(null);
     setSelectedMovie(null);
     setSelectedslot(null);
-    seats.forEach((seat) => {
-      seatsValues[seat] = 0;
+    setSeatsValues({
+      A1: 0,
+      A2: 0,
+      A3: 0,
+      A4: 0,
+      D1: 0,
+      D2: 0,
     });
+    localStorage.setItem("movie", null);
+    localStorage.setItem(
+      "seats",
+      JSON.stringify({
+        A1: 0,
+        A2: 0,
+        A3: 0,
+        A4: 0,
+        D1: 0,
+        D2: 0,
+      })
+    );
+    localStorage.setItem("slot", null);
+    localStorage.setItem("selectedSeat", null);
   };
 
   const handleClick = async () => {
     if (validateData()) {
       await makeOrder();
       await fetchLastOrder();
+      clearRequest();
     } else {
       console.log("invalidData");
     }
-    clearRequest();
   };
 
   return (
@@ -105,31 +121,36 @@ const App = () => {
       <h1>Book that show</h1>
       <Moives
         moives={movies}
-        selectMovie={(e) => setSelectedMovie(e.target.innerHTML)}
+        selectMovie={(e) => {
+          setSelectedMovie(e.target.innerHTML);
+          localStorage.setItem("movie", e.target.innerHTML);
+        }}
         selectedMoive={selectedMovie}
       />
       <Slots
         slots={slots}
-        selectSlot={(e) => setSelectedslot(e.target.innerHTML)}
+        selectSlot={(e) => {
+          setSelectedslot(e.target.innerHTML);
+          localStorage.setItem("slot", e.target.innerHTML);
+        }}
         seletedslot={seletedslot}
       />
       <Seats
         seats={seats}
         selectSeat={(e) => {
           setSelectedSeat(e.target.id.slice(5));
+          localStorage.setItem("selectedSeat", e.target.id.slice(5));
         }}
         selectedSeat={selectedSeat}
         seatsValues={seatsValues}
         changeSeatsValues={(e) => {
-          seatsValues[e.target.id.slice(5)] =
-            isNaN(e.target.value) ||
-            !parseInt(e.target.value) ||
-            parseInt(e.target.value) < 0
-              ? 0
-              : parseInt(e.target.value);
-          e.target.value = seatsValues[e.target.id.slice(5)];
-          setSeatsValues(seatsValues);
-          console.log(seatsValues);
+          console.log(e.target.value);
+          if (!isNaN(e.target.value) && parseInt(e.target.value) >= 0) {
+            let temp = seatsValues;
+            temp[e.target.id.slice(5)] = parseInt(e.target.value);
+            setSeatsValues({ ...temp });
+            localStorage.setItem("seats", JSON.stringify(seatsValues));
+          }
         }}
       />
       <LastBook LastOrderdata={lastOrder} />
