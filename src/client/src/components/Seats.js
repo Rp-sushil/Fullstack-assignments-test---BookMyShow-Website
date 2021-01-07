@@ -15,7 +15,7 @@ export default function Seats({
       {seats.map((seat, i) => {
         return (
           <div key={"seat-" + seat} className={getClass(seat)}>
-            <h5>Type-{seat}</h5>
+            <h5>Type {seat}</h5>
             <input
               type="number"
               value={seatsValues[seat]}
