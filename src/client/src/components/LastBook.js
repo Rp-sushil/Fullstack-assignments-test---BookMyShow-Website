@@ -5,7 +5,7 @@ export default function LastBook({ LastOrderdata }) {
   if (!movie || !seats || !slot)
     return (
       <div className="last-order">
-        <strong>Loading</strong>
+        <strong>no previous booking found</strong>
       </div>
     );
   return (
