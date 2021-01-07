@@ -8,7 +8,7 @@ export default function Seats({
   changeSeatsValues,
 }) {
   const getClass = (seat) =>
-    seat === selectedSeat ? "seat-column seat-column-selected" : "seat-column";
+    parseInt(seatsValues[seat]) > 0 ? "seat-column seat-column-selected" : "seat-column";
   return (
     <div className="seat-row">
       {console.log("rendered")}
