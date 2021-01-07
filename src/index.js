@@ -25,7 +25,7 @@ const schema = Joi.object().keys({
 app.get("/api/booking", async (req, res) => {
   try {
     const lastBooking = await connection.find().sort({ _id: -1 }).limit(1);
-    if (lastBooking.length === 0) return res.json({});
+    if (lastBooking.length === 0) return res.json({ message: "no previous booking found" });
     const { movie, seats, slot } = lastBooking[0];
     return res.json({ movie: movie, seats: seats, slot: slot });
   } catch (error) {
