@@ -35,30 +35,35 @@ const App = () => {
   const fetchLastOrder = async () => {
     const res = await fetch("/api/booking");
     const data = await res.json();
+    console.log("I'm making get request");
     setlastOrder(data);
   };
 
   const makeOrder = async () => {
     // POST request using fetch with async/await
+    const orderData = {
+      movie: selectedMovie,
+      seats: {
+        A1: seatsValues["A1"],
+        A2: seatsValues["A2"],
+        A3: seatsValues["A3"],
+        A4: seatsValues["A4"],
+        D1: seatsValues["D1"],
+        D2: seatsValues["D2"],
+      },
+      slot: seletedslot,
+    };
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        movie: selectedMovie,
-        seats: {
-          A1: seatsValues["A1"],
-          A2: seatsValues["A2"],
-          A3: seatsValues["A3"],
-          A4: seatsValues["A4"],
-          D1: seatsValues["D1"],
-          D2: seatsValues["D2"],
-        },
-        slot: seletedslot,
-      }),
+      body: JSON.stringify(orderData),
     };
     const response = await fetch("/api/booking", requestOptions);
-    const data = await response.json();
-    console.log(data);
+    if (response.ok) {
+      const data = await response.json();
+      setlastOrder(orderData);
+      console.log(data);
+    }
   };
 
   const validateData = () => {
@@ -109,7 +114,7 @@ const App = () => {
   const handleClick = async () => {
     if (validateData()) {
       await makeOrder();
-      await fetchLastOrder();
+      // await fetchLastOrder();
       clearRequest();
     } else {
       console.log("invalidData");
